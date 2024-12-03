@@ -1,0 +1,7 @@
+# Ignore everything in dataset folder but keep the folder itself
+dataset/*
+!dataset/.gitkeep
+
+# Ignore everything in weight folder but keep the folder itself
+weight/*
+!weight/.gitkeep
