@@ -2,7 +2,7 @@
 
 This repository contains the implementation code adapted from [GenConViT](https://github.com/erprogs/GenConViT) for **Deepfake Video Detection Using Slightly Modified and Enhanced Generative Convolutional Vision Transformer (GenConViT)** paper. Find the full paper on arXiv [here](https://arxiv.org/abs/2307.07036).
 
-This repo contribution is to improve the ed model architecture. Improvements are compared to only the original GenConViT's ed model but not the other components. We applied the same training process to our modified model, which has around 57 million parameters. It achieved
+This repo contribution is to improve the ed model architecture on deepfake image classification but not video. Improvements are compared to only the original GenConViT's ed model but not the other components. We applied the same training process to our modified model, which has around 57 million parameters. It achieved
 a precision of 0.8501, a recall of 0.951, an F1 score of 0.8977, and an accuracy of 0.8809. The F1 score of our model is 0.1115% greater than that of the original GenConViT's ed model, while our parameters are decreased by
 3.11%.
 <br/><br/>
