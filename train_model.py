@@ -8,7 +8,7 @@ import time
 from time import perf_counter
 import pickle
 from model.config import load_config
-from model.genconvit_ed import GenConViTED
+from model.genconvit_ed_new import GenConViTED
 from model.genconvit_vae import GenConViTVAE
 from dataset.loader import load_data, load_checkpoint
 import optparse

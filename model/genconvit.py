@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from .genconvit_ed import GenConViTED
+from .genconvit_ed_new import GenConViTED
 from .genconvit_vae import GenConViTVAE
 from torchvision import transforms
 

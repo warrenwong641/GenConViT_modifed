@@ -1,15 +1,16 @@
 import torch
 import os
 from model.config import load_config
-from model.genconvit_ed import GenConViTED
+from model.genconvit_ed_new import GenConViTED
 from model.genconvit_vae import GenConViTVAE
 from dataset.loader import load_data
 import argparse
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, classification_report, precision_recall_fscore_support
 from datetime import datetime
+import json
 
 def plot_confusion_matrix(y_true, y_pred, save_path=None):
     # Create confusion matrix
@@ -32,6 +33,21 @@ def plot_confusion_matrix(y_true, y_pred, save_path=None):
     else:
         plt.show()
     plt.close()
+
+def save_metrics(metrics, model_type, save_dir='result/metrics'):
+    # Create metrics directory if it doesn't exist
+    os.makedirs(save_dir, exist_ok=True)
+    
+    # Create filename with timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{model_type}_metrics_{timestamp}.json"
+    filepath = os.path.join(save_dir, filename)
+    
+    # Save metrics to JSON file
+    with open(filepath, 'w') as f:
+        json.dump(metrics, f, indent=4)
+    
+    print(f"Metrics saved to {filepath}")
 
 def test_model(weight_path, model_type='ed', batch_size=1):
     # Setup device
@@ -84,7 +100,7 @@ def test_model(weight_path, model_type='ed', batch_size=1):
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
 
-            # Store predictions and labels for confusion matrix
+            # Store predictions and labels for metrics
             all_predictions.extend(predicted.cpu().numpy())
             all_labels.extend(labels.cpu().numpy())
 
@@ -92,9 +108,29 @@ def test_model(weight_path, model_type='ed', batch_size=1):
             if batch_idx % 10 == 0:
                 print(f'Processed {batch_idx * batch_size}/{len(test_loader.dataset)} images')
 
+    # Calculate metrics
     accuracy = 100 * correct / total
+    precision, recall, f1, _ = precision_recall_fscore_support(all_labels, all_predictions, average='weighted')
+    
+    # Create metrics dictionary
+    metrics = {
+        'accuracy': accuracy,
+        'precision': precision.item(),
+        'recall': recall.item(),
+        'f1_score': f1.item(),
+        'test_size': total,
+        'correct_predictions': correct,
+        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'model_type': model_type,
+        'weight_path': weight_path
+    }
+
+    # Print results
     print(f'\nTest Results:')
-    print(f'Accuracy on test set: {accuracy:.2f}% ({correct}/{total})')
+    print(f'Accuracy: {accuracy:.2f}% ({correct}/{total})')
+    print(f'Precision: {precision:.4f}')
+    print(f'Recall: {recall:.4f}')
+    print(f'F1 Score: {f1:.4f}')
 
     # Generate and save confusion matrix
     print("\nGenerating confusion matrix...")
@@ -104,8 +140,11 @@ def test_model(weight_path, model_type='ed', batch_size=1):
         save_path=f'result/figures/confusion_matrix_{model_type}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png'
     )
 
-    # Print classification report
-    print("\nClassification Report:")
+    # Save metrics to file
+    save_metrics(metrics)
+
+    # Print detailed classification report
+    print("\nDetailed Classification Report:")
     print(classification_report(all_labels, all_predictions))
 
 def main():
