@@ -82,7 +82,7 @@ To train the GenConViT model, follow these steps:
 2. Run the training script:
 
 ```bash
-python train.py
+python train_model.py
     -d <training-data-path>
     -m <model-variant>
     -e <num-epochs>
@@ -102,10 +102,10 @@ The model weights and metrics are saved in the `weight` folder.
 
 **Example usage:** 
 ```bash
-python train.py --d sample_train_data --m vae -e 5 -t y
+python train_model.py --d sample_train_data --m vae -e 5 -t y
 ```
 ```bash
-python train.py --d sample_train_data --m ed --e 5 -t y
+python train_model.py --d sample_train_data --m ed --e 5 -t y
 ```
 
 ## Model Testing
